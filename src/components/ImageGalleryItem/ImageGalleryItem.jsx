@@ -7,8 +7,8 @@ function ImageGalleryItem({ data }) {
         <li key={img.id} className={css.ImageGalleryItem}>
           <img
             className={css.ImageGalleryItem_image}
-            src={img.previewURL}
-            alt=""
+            src={img.webformatURL}
+            alt="pic"
           />
         </li>
       ))}
