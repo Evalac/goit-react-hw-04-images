@@ -25,8 +25,17 @@ function ImgView({ queryName }) {
         setImgData(data.hits);
         setStatus(Status.RESOLVED);
       })
-      .catch(error => setError(error));
+      .catch(error => {
+        setError(error);
+        setStatus(Status.REJECTED);
+      });
   }, [queryName]);
+
+  if (status === Status.PENDING) {
+    <div>
+      <p> Завантажуєм зображення...</p>
+    </div>;
+  }
 
   if (status === Status.RESOLVED) {
     return (
@@ -36,10 +45,9 @@ function ImgView({ queryName }) {
       </>
     );
   }
-
-  //   if (status === Status.PENDING) {
-  //     <div>Завантажуєм зображення...</div>;
-  //   }
+  if (status === Status.REJECTED) {
+    return <div>{error.message}</div>;
+  }
 }
 
 export { ImgView };
