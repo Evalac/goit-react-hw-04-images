@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import * as ApiService from '../Services/PixabayApi';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { LoadMoreBtn } from 'components/Button/LoadMoreBtn';
@@ -11,37 +11,41 @@ const Status = {
 };
 
 function ImgView({ queryName }) {
-  const [imgData, setImgData] = useState(null);
+  const [imgData, setImgData] = useState([]);
   const [error, setError] = useState();
   const [status, setStatus] = useState(Status.IDLE);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (queryName === '') {
       return;
     }
+
     setStatus(Status.PENDING);
-    ApiService.fetchImg(queryName)
+    ApiService.fetchImg(queryName, page)
       .then(data => {
-        setImgData(data.hits);
+        setImgData(prevImgData => [...prevImgData, ...data.hits]); /// треба розпиляти в новий масив щоб завантажувалось білше зображень а не рендерилась нова сторінка
         setStatus(Status.RESOLVED);
       })
       .catch(error => {
         setError(error);
         setStatus(Status.REJECTED);
       });
-  }, [queryName]);
+  }, [queryName, page]);
 
   if (status === Status.PENDING) {
-    <div>
-      <p> Завантажуєм зображення...</p>
-    </div>;
+    return (
+      <div>
+        <p> Завантажуєм зображення...</p>
+      </div>
+    );
   }
 
   if (status === Status.RESOLVED) {
     return (
       <>
         <ImageGallery data={imgData} />
-        <LoadMoreBtn />
+        <LoadMoreBtn nextPage={setPage} />
       </>
     );
   }
