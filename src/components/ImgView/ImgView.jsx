@@ -12,7 +12,7 @@ const Status = {
 
 function ImgView({ queryName }) {
   const [imgData, setImgData] = useState([]);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
   const [status, setStatus] = useState(Status.IDLE);
   const [page, setPage] = useState(1);
   const [prevQuery, setPrevQuery] = useState('');
